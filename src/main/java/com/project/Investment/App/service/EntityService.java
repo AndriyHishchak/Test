@@ -1,8 +1,8 @@
 package com.project.Investment.App.service;
 
-import com.project.Investment.App.model.Entity;
+import com.project.Investment.App.DTO.EntityDto;
 
 public interface EntityService {
 
-    Entity findById (String id);
+    EntityDto findById (String id);
 }

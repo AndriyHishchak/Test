@@ -1,5 +1,7 @@
 package com.project.Investment.App.service.impl;
 
+import com.project.Investment.App.DTO.EntityDto;
+import com.project.Investment.App.exception.NotFountException;
 import com.project.Investment.App.model.Entity;
 import com.project.Investment.App.repository.EntityRepository;
 import com.project.Investment.App.service.EntityService;
@@ -10,15 +12,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EntityServiceImpl implements EntityService {
 
-    private final EntityRepository entityRepository;
+    private final EntityRepository repository;
 
-    public EntityServiceImpl(EntityRepository entityRepository) {
-        this.entityRepository = entityRepository;
+    public EntityServiceImpl(EntityRepository repository) {
+        this.repository = repository;
     }
 
-
     @Override
-    public Entity findById(String id) {
-        return entityRepository.findById(id).stream().findFirst().orElse(null);
+    public EntityDto findById(String id) {
+        Entity entity = repository.findById(id)
+                .orElseThrow(() -> new NotFountException("Entity not found"));
+        log.info("In findById - entity: {} find by id: {}",entity,id);
+        return EntityDto.fromEntity(entity);
     }
 }
