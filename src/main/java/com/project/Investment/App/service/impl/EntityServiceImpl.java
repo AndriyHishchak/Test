@@ -1,6 +1,7 @@
 package com.project.Investment.App.service.impl;
 
-import com.project.Investment.App.dao.EntityDao;
+import com.project.Investment.App.dto.EntityDtoRequest;
+import com.project.Investment.App.exception.ListEmptyException;
 import com.project.Investment.App.exception.ResourceNotFoundException;
 import com.project.Investment.App.model.Entity;
 import com.project.Investment.App.repository.EntityRepository;
@@ -23,40 +24,51 @@ public class EntityServiceImpl implements EntityService {
     }
 
     @Override
-    public EntityDao findById(String id) throws ResourceNotFoundException {
+    public Entity findById(String id) throws ResourceNotFoundException {
         Entity entity = repository.findByEntityId_EntityId(id).stream().findAny()
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found : " + id));
-        log.info("In findById - entity: {} find by id: {}",entity,id);
+        log.info("Method: findById - entity: {} find by id: {}",entity,id);
 
-        return EntityDao.fromEntity(entity);
-    }
-    @Override
-    public EntityDao create (Entity entity) {
-
-        Entity entitySave = repository.save(entity);
-        EntityDao result = EntityDao.fromEntity(entitySave);
-        log.info("IN created - airCompany: {} successfully created : ", result);
-        return result;
+        return entity;
     }
 
     @Override
-    public List<EntityDao> getAll(Optional<String> name) {
-        List<EntityDao> entityDaos = new ArrayList<>();
+    public List<Entity> findByDefaultBenchmarkId(String id) throws ResourceNotFoundException {
+        List<Entity> entities = repository.findByDefaultBenchmarkId(id);
+        log.info("Method: findById - entity: {} find by entity: {}",entities.size(),id);
+        return entities;
+    }
+    @Override
+    public Entity create (EntityDtoRequest entity) {
+
+            Entity entitySave = repository.save(EntityDtoRequest.fromEntityDtoResponse(entity));
+            EntityDtoRequest result = EntityDtoRequest.fromEntity(entitySave);
+            log.info("Method: create - created entity: {} successfully created : ", result);
+            return entitySave;
+    }
+
+    @Override
+    public List<Entity> getAll(Optional<String> name) {
 
         if (name.isPresent()) {
             List<Entity> entities = repository.findByEntityName(name.get());
-            entities.forEach(entity -> entityDaos.add(EntityDao.fromEntity(entity)));
-           // log.info("IN findByName - airCompany: {} find by name: {}", airCompany, name);
-            return new ArrayList<>(entityDaos);
+            if (entities.isEmpty()) {
+                throw new ListEmptyException();
+            }
+            log.info("Method: findByName - entity find by name: {}", name);
+            return new ArrayList<>(entities);
         }
+
         List<Entity> entities = repository.findAll();
-        entities.forEach(entity -> entityDaos.add(EntityDao.fromEntity(entity)));
-       // log.info("IN getAll - {} company found", airCompanyDtos.size());
-        return new ArrayList<>(entityDaos);
+        if (entities.isEmpty()) {
+            throw new ListEmptyException();
+        }
+        log.info("Method: getAll - {} entity found", entities.size());
+        return new ArrayList<>(entities);
     }
 
     @Override
-    public EntityDao update(String id, Entity entityPath) {
+    public Entity update(String id, EntityDtoRequest entityPath) {
 
         Entity entityRefresh = repository.findByEntityId_EntityId(id).stream().findAny()
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found : " + id));
@@ -65,42 +77,44 @@ public class EntityServiceImpl implements EntityService {
         entityRefresh.setEntityType(entityPath.getEntityType());
         entityRefresh.setDefaultBenchmarkId(entityPath.getDefaultBenchmarkId());
 
-        repository.save(entityRefresh);
-        log.info("IN update - AirCompany with id : {} ", id);
-        return EntityDao.fromEntity(entityRefresh);
+        log.info("Method: update - entity with id : {} ", id);
+        return repository.save(entityRefresh);
     }
     @Override
-    public EntityDao updateParametersEntity(String id,
-                                                Optional<String> entityType,
-                                                Optional <String> entityName,
-                                                Optional<String> defaultBenchmarkId ) {
+    public Entity updateParametersEntity(String id,
+                                                   Optional<String> entityType,
+                                                   Optional <String> entityName,
+                                                   Optional<String> defaultBenchmarkId ) {
         Entity entity = repository.findByEntityId_EntityId(id).stream().findAny()
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found : " + id));
         if (entityName.isPresent()) {
             entity.setEntityName(entityName.get());
-            log.info("IN update Name Company - AirCompany with id : {} ", id); }
+            log.info("Method: updateParametersEntity - update name entity - Entity with id : {} ", id); }
         if (entityType.isPresent()) {
             entity.setEntityType(entityType.get());
-            log.info("IN update Type Company - AirCompany with id : {} ", id); }
+            log.info("Method: updateParametersEntity - update type entity - Entity with id : {} ", id); }
         if (defaultBenchmarkId.isPresent()) {
             entity.setDefaultBenchmarkId(defaultBenchmarkId.get());
-            log.info("IN update ");
+            log.info("Method: updateParametersEntity - update defaultBenchmarkId - Entity with id : {}", id );
         }
-        log.info("IN finish update  - airCompany with id : {} ", id);
+        log.info("Method: updateParametersEntity - finish update model Entity - Entity with id : {} ", id);
 
-        return EntityDao.fromEntity(repository.save(entity));
+        return repository.save(entity);
     }
     @Override
-    public void deleteEntity(String id) {
+    public Entity deleteEntity(String id) {
        Entity entity = repository.findByEntityId_EntityId(id).stream().findAny()
                 .orElseThrow(() -> new ResourceNotFoundException("Entity not found : " + id));
         repository.delete(entity);
-        log.info("IN delete - AirCompany with id : {} ", id);
+        log.info("Method: deleteEntity - delete Entity with id : {} ", id);
+        return entity;
     }
 
     @Override
     public void deleteAllEntity() {
         repository.deleteAll();
-        log.info("IN deleted All AirCompany");
+        log.info("Method: deleteAllEntity - deleted All Entity");
     }
+
+
 }

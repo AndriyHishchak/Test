@@ -1,11 +1,16 @@
 package com.project.Investment.App.service;
 
-import com.project.Investment.App.dao.PerfAggregateDao;
+import com.project.Investment.App.dto.PerfAggregateRequest;
+import com.project.Investment.App.model.PerfAggregate;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface PerfAggregateService {
-    PerfAggregateDao findById (Integer id);
-    List<PerfAggregateDao> findAll();
+    PerfAggregate findById (Integer id);
+    List<PerfAggregate> findAll();
     Integer getCountPerfAggregate();
+    boolean isPerfAggregateIdExists(Integer id);
+    List<PerfAggregate> getPerfAggregateDateRange(LocalDate startDate, LocalDate effectiveDate);
+    void save (PerfAggregateRequest perfAggregateRequest);
 }
