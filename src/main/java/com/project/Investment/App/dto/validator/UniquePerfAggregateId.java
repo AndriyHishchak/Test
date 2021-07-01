@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UniquePerfAggregateIdValidator.class)
 public @interface UniquePerfAggregateId {
-    String message() default "Creating a record with a not unique Perf-Aggregate Id";
+    String message() default "Value is present in DB";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

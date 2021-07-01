@@ -1,9 +1,11 @@
-package com.project.Investment.App.rest;
+package com.project.Investment.App.rest.jpa;
 
 import com.project.Investment.App.dto.EntityDtoRequest;
 import com.project.Investment.App.model.Entity;
 
 import com.project.Investment.App.service.EntityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +20,8 @@ import java.util.Optional;
 public class RestControllerEntity {
 
     private final EntityService service;
-
-    public RestControllerEntity(EntityService service) {
+    @Autowired
+    public RestControllerEntity(@Qualifier("entityServiceJpa") EntityService service) {
         this.service = service;
     }
 

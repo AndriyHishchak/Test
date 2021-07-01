@@ -2,7 +2,7 @@ package com.project.Investment.App.dto;
 
 import com.project.Investment.App.dto.validator.UniqueDefaultBenchmarkId;
 import com.project.Investment.App.model.Entity;
-import com.project.Investment.App.model.EntityId;
+import com.project.Investment.App.model.embeddedId.EntityId;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

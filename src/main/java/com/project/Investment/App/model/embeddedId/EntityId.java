@@ -1,4 +1,4 @@
-package com.project.Investment.App.model;
+package com.project.Investment.App.model.embeddedId;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

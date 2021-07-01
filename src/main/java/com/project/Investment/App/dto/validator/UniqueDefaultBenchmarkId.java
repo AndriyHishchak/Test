@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UniqueDefaultBenchmarkIdValidator.class)
 public @interface UniqueDefaultBenchmarkId {
-    String message() default "Creating a record with unique Default Benchmark Id";
+    String message() default "No value is present in DB";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

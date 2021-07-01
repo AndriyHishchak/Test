@@ -1,19 +1,20 @@
-package com.project.Investment.App.service.impl;
+package com.project.Investment.App.service.impl.jpa;
 
 import com.project.Investment.App.dto.EntityDtoRequest;
-import com.project.Investment.App.exception.ListEmptyException;
 import com.project.Investment.App.exception.ResourceNotFoundException;
 import com.project.Investment.App.model.Entity;
 import com.project.Investment.App.repository.EntityRepository;
 import com.project.Investment.App.service.EntityService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("entityServiceJpa")
 @Slf4j
 public class EntityServiceImpl implements EntityService {
 
@@ -52,19 +53,18 @@ public class EntityServiceImpl implements EntityService {
 
         if (name.isPresent()) {
             List<Entity> entities = repository.findByEntityName(name.get());
-            if (entities.isEmpty()) {
-                throw new ListEmptyException();
-            }
             log.info("Method: findByName - entity find by name: {}", name);
             return new ArrayList<>(entities);
         }
 
         List<Entity> entities = repository.findAll();
-        if (entities.isEmpty()) {
-            throw new ListEmptyException();
-        }
         log.info("Method: getAll - {} entity found", entities.size());
         return new ArrayList<>(entities);
+    }
+
+    @Override
+    public List<Entity> getAll() {
+        return null;
     }
 
     @Override
